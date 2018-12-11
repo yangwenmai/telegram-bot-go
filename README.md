@@ -1,2 +1,3 @@
 # telegram-bot-go
-telegram bot using go
+
+Night-Reading-Go telegram go bot.
