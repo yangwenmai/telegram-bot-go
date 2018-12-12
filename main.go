@@ -3,7 +3,9 @@ package main
 import (
 	"log"
 	"os"
+	"strings"
 
+	"github.com/developer-learning/telegram-bot-go/command"
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
@@ -35,14 +37,30 @@ func main() {
 		// so we should leave it empty.
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, "")
 
+		log.Printf("update.Message:%v", update.Message)
 		// Extract the command from the Message.
 		switch update.Message.Command() {
 		case "help":
-			msg.Text = "type /sayhi or /status."
+			msg.Text = `type /sayhi
+				/trending go today or /trending go weekly or /trending go monthly
+				/status`
 		case "sayhi":
 			msg.Text = "Hi :)"
 		case "status":
 			msg.Text = "I'm ok."
+		case "trending":
+			t := strings.Split(update.Message.Text, " ")
+			if strings.TrimSpace(t[1]) == "" {
+				msg.Text = "Please input correct language!!!"
+			} else {
+				since := "today"
+				if len(t) >= 3 && t[2] != "" {
+					since = t[2]
+				}
+				msg.Text = command.ListGithubTrending(t[1], since)
+				msg.ReplyToMessageID = update.Message.MessageID
+				msg.ParseMode = "markdown"
+			}
 		default:
 			msg.Text = "I don't know that command"
 		}

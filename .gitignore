@@ -12,5 +12,8 @@
 *.out
 
 *.log
+.idea
+.vscode
+**/**.DS_Store
 
 telegram-bot-go
